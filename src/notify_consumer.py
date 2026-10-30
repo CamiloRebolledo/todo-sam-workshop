@@ -11,8 +11,8 @@ def handler(event, context):
             todo = evt["data"]
 
             # Mensaje "venenoso" simulado para practicar reintentos y DLQ
-            if "#fail" in todo["title"]:
-                raise ValueError("fallo simulado: el título contiene #fail")
+            # if "#fail" in todo["title"]:
+            #     raise ValueError("fallo simulado: el título contiene #fail")
 
             print(f'[NOTIFICACION] Completado: "{todo["title"]}" ({todo["id"]})')
         except Exception as exc:
