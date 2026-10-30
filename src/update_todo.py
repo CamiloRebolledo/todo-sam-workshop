@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from utils import table, response, parse_body
+from utils import table, response, parse_body, publish_event
 
 
 def handler(event, context):
@@ -45,4 +45,10 @@ def handler(event, context):
         result = table.update_item(**kwargs)
     except table.meta.client.exceptions.ConditionalCheckFailedException:
         return response(404, {"message": f"TODO {todo_id} no existe"})
-    return response(200, result["Attributes"])
+
+    todo = result["Attributes"]
+
+    # Evento más específico si el TODO se marcó como completado
+    event_type = "todo.completed" if data.get("completed") is True else "todo.updated"
+    publish_event(event_type, todo)
+    return response(200, todo)
